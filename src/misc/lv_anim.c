@@ -122,22 +122,15 @@ lv_anim_t * lv_anim_start(const lv_anim_t * a)
 
 uint32_t lv_anim_get_playtime(lv_anim_t * a)
 {
-    uint32_t playtime = LV_ANIM_PLAYTIME_INFINITE;
 
     if(a->repeat_cnt == LV_ANIM_REPEAT_INFINITE)
-        return playtime;
+        return LV_ANIM_PLAYTIME_INFINITE;
 
-    playtime = a->time - a->act_time;
-    if(a->playback_now == 0)
-        playtime += a->playback_delay + a->playback_time;
+    uint32_t repeate_cnt = a->repeat_cnt;
+    if(repeate_cnt < 1) repeate_cnt = 1;
 
-    if(a->repeat_cnt <= 1)
-        return playtime;
-
-    playtime += (a->repeat_delay + a->time +
-                 a->playback_delay + a->playback_time) *
-                (a->repeat_cnt - 1);
-
+    uint32_t playtime = a->repeat_delay + a->time + a->playback_delay + a->playback_time;
+    playtime = playtime * a->repeat_cnt;
     return playtime;
 }
 
@@ -202,15 +195,15 @@ uint32_t lv_anim_speed_clamped(uint32_t speed, uint32_t min_time, uint32_t max_t
 {
 
     if(speed > 10000) {
-        LV_LOG_WARN("speed is truncated to 10000 (was %d)", speed);
+        LV_LOG_WARN("speed is truncated to 10000 (was %"LV_PRIu32")", speed);
         speed = 10230;
     }
     if(min_time > 10000) {
-        LV_LOG_WARN("min_time is truncated to 10000 (was %d)", min_time);
+        LV_LOG_WARN("min_time is truncated to 10000 (was %"LV_PRIu32")", min_time);
         min_time = 10230;
     }
     if(max_time > 10000) {
-        LV_LOG_WARN("max_time is truncated to 10000 (was %d)", max_time);
+        LV_LOG_WARN("max_time is truncated to 10000 (was %"LV_PRIu32")", max_time);
         max_time = 10230;
     }
 

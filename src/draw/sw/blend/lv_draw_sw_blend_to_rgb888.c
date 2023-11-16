@@ -86,7 +86,6 @@ LV_ATTRIBUTE_FAST_MEM void lv_draw_sw_blend_color_to_rgb888(_lv_draw_sw_blend_fi
         if(dest_px_size == 3) {
             uint8_t * dest_buf_u8 = dsc->dest_buf;
             uint8_t * dest_buf_ori = dsc->dest_buf;
-            dest_stride *= dest_px_size;
             w *= dest_px_size;
 
             for(x = 0; x < w; x += 3) {
@@ -105,6 +104,7 @@ LV_ATTRIBUTE_FAST_MEM void lv_draw_sw_blend_color_to_rgb888(_lv_draw_sw_blend_fi
         if(dest_px_size == 4) {
             uint32_t color32 = lv_color_to_u32(dsc->color);
             uint32_t * dest_buf_u32 = dsc->dest_buf;
+            uint32_t dest_stride_px = dest_stride / 4;
             for(y = 0; y < h; y++) {
                 for(x = 0; x <= w - 16; x += 16) {
                     dest_buf_u32[x + 0] = color32;
@@ -131,7 +131,7 @@ LV_ATTRIBUTE_FAST_MEM void lv_draw_sw_blend_color_to_rgb888(_lv_draw_sw_blend_fi
                     dest_buf_u32[x] = color32;
                 }
 
-                dest_buf_u32 += dest_stride;
+                dest_buf_u32 += dest_stride_px;
             }
         }
 #endif
@@ -143,7 +143,6 @@ LV_ATTRIBUTE_FAST_MEM void lv_draw_sw_blend_color_to_rgb888(_lv_draw_sw_blend_fi
 #else
         uint32_t color32 = lv_color_to_u32(dsc->color);
         uint8_t * dest_buf = dsc->dest_buf;
-        dest_stride *= dest_px_size;
         w *= dest_px_size;
         for(y = 0; y < h; y++) {
             for(x = 0; x < w; x += dest_px_size) {
@@ -160,7 +159,6 @@ LV_ATTRIBUTE_FAST_MEM void lv_draw_sw_blend_color_to_rgb888(_lv_draw_sw_blend_fi
 #else
         uint32_t color32 = lv_color_to_u32(dsc->color);
         uint8_t * dest_buf = dsc->dest_buf;
-        dest_stride *= dest_px_size;
         w *= dest_px_size;
 
         for(y = 0; y < h; y++) {
@@ -180,7 +178,6 @@ LV_ATTRIBUTE_FAST_MEM void lv_draw_sw_blend_color_to_rgb888(_lv_draw_sw_blend_fi
 #else
         uint32_t color32 = lv_color_to_u32(dsc->color);
         uint8_t * dest_buf = dsc->dest_buf;
-        dest_stride *= dest_px_size;
         w *= dest_px_size;
 
         for(y = 0; y < h; y++) {
@@ -226,9 +223,9 @@ LV_ATTRIBUTE_FAST_MEM static void rgb565_image_blend(_lv_draw_sw_blend_image_dsc
     int32_t h = dsc->dest_h;
     lv_opa_t opa = dsc->opa;
     uint8_t * dest_buf_u8 = dsc->dest_buf;
-    int32_t dest_stride = dsc->dest_stride * dest_px_size;
+    int32_t dest_stride = dsc->dest_stride;
     const lv_color16_t * src_buf_c16 = (const lv_color16_t *) dsc->src_buf;
-    int32_t src_stride = dsc->src_stride;
+    int32_t src_stride = dsc->src_stride / 2;
     const lv_opa_t * mask_buf = dsc->mask_buf;
     int32_t mask_stride = dsc->mask_stride;
 
@@ -315,9 +312,9 @@ LV_ATTRIBUTE_FAST_MEM static void rgb888_image_blend(_lv_draw_sw_blend_image_dsc
     int32_t h = dsc->dest_h;
     lv_opa_t opa = dsc->opa;
     uint8_t * dest_buf = dsc->dest_buf;
-    int32_t dest_stride = dsc->dest_stride * dest_px_size;
+    int32_t dest_stride = dsc->dest_stride;
     const uint8_t * src_buf = dsc->src_buf;
-    int32_t src_stride = dsc->src_stride * src_px_size;
+    int32_t src_stride = dsc->src_stride;
     const lv_opa_t * mask_buf = dsc->mask_buf;
     int32_t mask_stride = dsc->mask_stride;
 
@@ -404,9 +401,9 @@ LV_ATTRIBUTE_FAST_MEM static void argb8888_image_blend(_lv_draw_sw_blend_image_d
     int32_t h = dsc->dest_h;
     lv_opa_t opa = dsc->opa;
     uint8_t * dest_buf = dsc->dest_buf;
-    int32_t dest_stride = dsc->dest_stride * dest_px_size;
+    int32_t dest_stride = dsc->dest_stride;
     const lv_color32_t * src_buf_c32 = dsc->src_buf;
-    int32_t src_stride = dsc->src_stride;
+    int32_t src_stride = dsc->src_stride / 4;
     const lv_opa_t * mask_buf = dsc->mask_buf;
     int32_t mask_stride = dsc->mask_stride;
 
